@@ -1,15 +1,30 @@
 class Solution {
     public int[][] merge(int[][] intervals) {
         if(intervals.length<=1) return intervals;
-        LinkedList<int[]> res = new LinkedList();
-        Arrays.sort(intervals, Comparator.comparingInt(i -> i[0]));
-        for(int[] interval:intervals){
-            if(res.isEmpty()||res.getLast()[1]<interval[0]){
-                res.add(interval);
+        Deque<int[]> stack = new ArrayDeque();
+        Arrays.sort(intervals, Comparator.comparingInt(i->i[0]));
+        
+        for(int[] interval: intervals){
+            if(stack.isEmpty()||notOverlap(stack.peek(), interval)){
+                stack.push(interval);
             }else{
-                res.getLast()[1] = Math.max(res.getLast()[1], interval[1]);
+                // peek: [1,3] interval: [2,6] res: [1,6]
+                // peek: [1,4] interval: [2,3] res: [1,4]
+                if(stack.peek()[1]<=interval[1]){
+                    stack.push(new int[]{stack.pop()[0], interval[1]});
+                }else{
+                    continue;
+                }
             }
         }
-        return res.toArray(new int[res.size()][]);
+        int[][] res = new int[stack.size()][2];
+        return stack.toArray(res);
+    }
+    
+    private boolean notOverlap(int[] a, int[] b){
+        if(a[0]<b[0]&&a[1]<b[0]){
+            return true;
+        }
+        return false;
     }
 }
