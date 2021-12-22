@@ -1,58 +1,50 @@
-class Trie {
-    class TrieNode{
-        boolean isEnd = false;
-        HashMap<Character, TrieNode> map;
-        public TrieNode(){
-            map = new HashMap();
-        }
+class TrieNode {
+    public char val;
+    public boolean isWord; 
+    public TrieNode[] children = new TrieNode[26];
+    public TrieNode() {}
+    TrieNode(char c){
+        TrieNode node = new TrieNode();
+        node.val = c;
     }
-    TrieNode head;
-    
-    /** Initialize your data structure here. */
+}
+
+public class Trie {
+    private TrieNode root;
     public Trie() {
-        head = new TrieNode();
+        root = new TrieNode();
+        root.val = ' ';
     }
-    
-    /** Inserts a word into the trie. */
+
     public void insert(String word) {
-        if(word == null) return;
-        TrieNode node = head;
-        for(char letter:word.toCharArray()){
-            if(!node.map.containsKey(letter)){
-                node.map.put(letter, new TrieNode());
+        TrieNode ws = root;
+        for(int i = 0; i < word.length(); i++){
+            char c = word.charAt(i);
+            if(ws.children[c - 'a'] == null){
+                ws.children[c - 'a'] = new TrieNode(c);
             }
-            node = node.map.get(letter);
+            ws = ws.children[c - 'a'];
         }
-        node.isEnd=true;
+        ws.isWord = true;
     }
-    
-    /** Returns if the word is in the trie. */
+
     public boolean search(String word) {
-        if(word==null) return false;
-        TrieNode node = head;
-        for(char letter:word.toCharArray()){
-            if(!node.map.containsKey(letter)) return false;
-            node = node.map.get(letter);
+        TrieNode ws = root; 
+        for(int i = 0; i < word.length(); i++){
+            char c = word.charAt(i);
+            if(ws.children[c - 'a'] == null) return false;
+            ws = ws.children[c - 'a'];
         }
-        return node.isEnd;
+        return ws.isWord;
     }
-    
-    /** Returns if there is any word in the trie that starts with the given prefix. */
+
     public boolean startsWith(String prefix) {
-                if(prefix==null) return false;
-        TrieNode node = head;
-        for(char letter:prefix.toCharArray()){
-            if(!node.map.containsKey(letter)) return false;
-            node = node.map.get(letter);
+        TrieNode ws = root; 
+        for(int i = 0; i < prefix.length(); i++){
+            char c = prefix.charAt(i);
+            if(ws.children[c - 'a'] == null) return false;
+            ws = ws.children[c - 'a'];
         }
         return true;
     }
 }
-
-/**
- * Your Trie object will be instantiated and called as such:
- * Trie obj = new Trie();
- * obj.insert(word);
- * boolean param_2 = obj.search(word);
- * boolean param_3 = obj.startsWith(prefix);
- */
