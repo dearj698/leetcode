@@ -19,24 +19,15 @@ class Node {
 */
 
 class Solution {
-    HashMap<Node, Node> cpy = new HashMap<>();
-    Deque<Node> queue = new ArrayDeque();
+    HashMap<Node, Node> map = new HashMap();
     public Node cloneGraph(Node node) {
-        if(node==null) return null;
-        Node newRoot = new Node(node.val, new ArrayList<>());
-        cpy.put(node, newRoot);
-        queue.add(node);
-        while(!queue.isEmpty()){
-            Node cur = queue.poll();
-            Node curcpy = cpy.get(cur);
-            for (Node neighbor : cur.neighbors) {
-                if(!cpy.containsKey(neighbor)){
-                    cpy.put(neighbor, new Node(neighbor.val, new ArrayList<>()));
-                    queue.push(neighbor);
-            }
-                    curcpy.neighbors.add(cpy.get(neighbor));
-            }
+        if(node == null) return null;
+        if(map.containsKey(node)) return map.get(node);
+        Node nodecpy = new Node(node.val, new ArrayList());
+        map.put(node, nodecpy);
+        for(Node neigh: node.neighbors){
+            nodecpy.neighbors.add(cloneGraph(neigh));
         }
-        return newRoot;
+        return nodecpy;
     }
 }
