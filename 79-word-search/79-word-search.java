@@ -16,7 +16,7 @@ class Solution {
     }
     
     private boolean findWord(int col, int row, char[][] board, String word, int idx){
-        if(idx >= word.length()){
+        if(idx > word.length()-1){
             return true;
         }
         else if(col<0||row<0||col>board.length-1||row>board[0].length-1||board[col][row]!=word.charAt(idx)){
